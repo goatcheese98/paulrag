@@ -184,7 +184,7 @@ export default function App() {
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-400 to-brand-700 flex items-center justify-center shadow-lg mb-5">
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Ask PaulBot anything</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Ask Level Up Channel Bot anything</h2>
               <p className="text-gray-500 max-w-md mb-8 text-sm leading-relaxed">
                 Get answers about mortgages, home buying, refinancing, and real estate financing —
                 backed by timestamps and links to Paul's YouTube videos.
