@@ -1,4 +1,4 @@
 providers = ["python"]
 
 [start]
-cmd = "cd backend && uvicorn api:app --host 0.0.0.0 --port $PORT"
+cmd = "cd backend && bash start.sh"
