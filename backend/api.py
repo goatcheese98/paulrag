@@ -26,10 +26,15 @@ _raw_origins = os.getenv(
     "http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:5176,http://localhost:3000",
 )
 origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+origin_regex = os.getenv(
+    "ALLOWED_ORIGIN_REGEX",
+    r"https://([a-z0-9-]+\.)?paulrag\.pages\.dev$",
+)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex=origin_regex,
     allow_methods=["*"],
     allow_headers=["*"],
 )
