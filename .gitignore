@@ -1,0 +1,11 @@
+.env
+.venv/
+**/chroma_db/
+frontend/node_modules/
+frontend/dist/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+/tmp/
+*.log
