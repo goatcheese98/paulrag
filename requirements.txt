@@ -1,0 +1,7 @@
+youtube-transcript-api
+yt-dlp
+chromadb
+openai
+fastapi
+uvicorn[standard]
+python-dotenv
