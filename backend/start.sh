@@ -7,7 +7,7 @@ CHROMA="${CHROMA_PATH:-/data/chroma_db}"
 
 if [ ! -d "$CHROMA" ] || [ -z "$(ls -A "$CHROMA" 2>/dev/null)" ]; then
   echo "ChromaDB is empty — starting background ingestion..."
-  python ingest.py > /tmp/ingest.log 2>&1 &
+  python ingest.py &
   echo "Ingestion running in background (PID $!). API starting now."
 fi
 
