@@ -5,10 +5,13 @@ Run with:
     uvicorn api:app --reload --port 8000
 """
 
+import io
 import json
 import os
+import shutil
+import tarfile
 from typing import List
-from fastapi import FastAPI
+from fastapi import FastAPI, Header, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -69,4 +72,25 @@ async def chat(req: ChatRequest):
 
 @app.get("/api/status")
 async def status():
+    return get_status()
+
+
+@app.post("/api/admin/seed-db")
+async def seed_db(file: UploadFile = File(...), x_admin_token: str = Header(...)):
+    """Upload a .tar.gz of the chroma_db directory to populate the Railway volume."""
+    expected = os.getenv("ADMIN_TOKEN", "")
+    if not expected or x_admin_token != expected:
+        raise HTTPException(status_code=403, detail="Invalid admin token")
+
+    chroma_path = Path(os.getenv("CHROMA_PATH", "/data/chroma_db"))
+
+    # Wipe existing data and replace with uploaded archive
+    if chroma_path.exists():
+        shutil.rmtree(chroma_path)
+    chroma_path.mkdir(parents=True, exist_ok=True)
+
+    contents = await file.read()
+    with tarfile.open(fileobj=io.BytesIO(contents), mode="r:gz") as tar:
+        tar.extractall(path=chroma_path)
+
     return get_status()
