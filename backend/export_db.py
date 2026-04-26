@@ -2,7 +2,7 @@
 Export local ChromaDB to JSON, then upload to Railway via the import endpoint.
 
 Usage:
-    python export_db.py --url https://paulrag-api-production.up.railway.app --token TOKEN
+    python export_db.py --url https://your-railway-backend.up.railway.app --token TOKEN
 """
 import argparse
 import json

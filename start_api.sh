@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Starts the FastAPI backend. Run from the paulrag/ root directory.
+# Starts the FastAPI backend. Run from the repository root directory.
 set -e
 
 cd "$(dirname "$0")"
