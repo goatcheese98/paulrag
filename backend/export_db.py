@@ -35,25 +35,38 @@ def export_and_upload(api_url: str, token: str):
     print(f"Exporting {count} chunks...")
 
     results = col.get(include=["documents", "metadatas", "embeddings"])
-    payload = {
-        "ids": results["ids"],
-        "documents": results["documents"],
-        "metadatas": results["metadatas"],
-        "embeddings": results["embeddings"],
-    }
+    embeddings = results["embeddings"]
+    if embeddings is not None:
+        embeddings = [e.tolist() if hasattr(e, "tolist") else e for e in embeddings]
+    ids = results["ids"]
+    documents = results["documents"]
+    metadatas = results["metadatas"]
 
-    print(f"Uploading to {api_url}/api/admin/import-db ...")
+    batch_size = int(os.getenv("EXPORT_BATCH_SIZE", "50"))
+    print(f"Uploading to {api_url}/api/admin/import-db in batches of {batch_size} ...")
+
     import urllib.request
-    data = json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(
-        f"{api_url}/api/admin/import-db",
-        data=data,
-        headers={"Content-Type": "application/json", "x-admin-token": token},
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        result = json.loads(resp.read())
-    print("Result:", result)
+
+    total_uploaded = 0
+    for start in range(0, len(ids), batch_size):
+        end = min(start + batch_size, len(ids))
+        payload = {
+            "ids": ids[start:end],
+            "documents": documents[start:end],
+            "metadatas": metadatas[start:end],
+            "embeddings": embeddings[start:end] if embeddings is not None else None,
+        }
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            f"{api_url}/api/admin/import-db",
+            data=data,
+            headers={"Content-Type": "application/json", "x-admin-token": token},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            result = json.loads(resp.read())
+        total_uploaded += end - start
+        print(f"  Uploaded {total_uploaded}/{len(ids)} chunks:", result)
 
 
 if __name__ == "__main__":
